@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    password: root
+    username: root
+    url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+  thymeleaf:
+    cache: false
+#mybatis:
+server:
+  port: 8081
+#  mapper-locations: classpath*:mybatis/mapper/*.xml
