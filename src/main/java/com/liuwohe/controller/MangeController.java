@@ -1,18 +1,20 @@
 package com.liuwohe.controller;
 
+import cn.afterturn.easypoi.excel.ExcelImportUtil;
 import com.liuwohe.entity.Employee;
 import com.liuwohe.entity.Organization;
 import com.liuwohe.entity.Select;
 import com.liuwohe.service.EmpService;
 import com.liuwohe.service.OrgService;
+import com.liuwohe.utils.EasyPoiExcelUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -23,7 +25,6 @@ public class MangeController {
 
     @Autowired
     private EmpService empService;
-
 
     /**
      * 进入主页面
@@ -73,7 +74,7 @@ public class MangeController {
     }
 
     /**
-     * 添加后跳转到主页面
+     * 执行添加后跳转到主页面
      */
     @PostMapping("/add")
     public String AddToList(Employee employee){
@@ -115,6 +116,29 @@ public class MangeController {
     public String deletEmp(@PathVariable("id") Integer id){
         empService.delete(id);
         return "redirect:/index";
+    }
+
+
+    /**
+     * 导出数据到表格
+     * */
+    @ResponseBody
+    @GetMapping("/download")
+    public void downLoad(HttpServletResponse response){
+        //模拟从数据库获取需要导出的数据,实战换为数据访问层返回的结果就行。
+        //得到员工列表
+        List<Employee> empList = empService.getEmpList();
+        //导出操作
+        EasyPoiExcelUtil.exportExcel(empList,"员工信息统计","员工信息",Employee.class,"员工信息统计表.xls",response);
+    }
+    @ResponseBody
+    @PostMapping("/upload")
+    public String upLoad(@RequestParam("file") MultipartFile file){
+
+        List<Employee> empList = EasyPoiExcelUtil.importExcel(file, 1, 1, Employee.class);
+        System.out.println(empList);
+        empService.insert((Employee) empList);
+        return "success";
     }
 
 }

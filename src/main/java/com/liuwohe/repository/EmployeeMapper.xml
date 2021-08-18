@@ -6,8 +6,9 @@
     <result column="org_id" jdbcType="VARCHAR" property="orgId" />
     <result column="sex" jdbcType="VARCHAR" property="sex" />
     <result column="birthday" jdbcType="DATE" property="birthday" />
-    <result column="e_name" jdbcType="VARCHAR" property="eName" />
+    <result column="e_name" jdbcType="VARCHAR" property="name" />
     <result column="age" jdbcType="INTEGER" property="age" />
+    <result column="salary" jdbcType="DOUBLE" property="salary" />
     <association property="organization" column="org" javaType="com.liuwohe.entity.Organization">
       <id column="id" jdbcType="INTEGER" property="id" />
       <result column="org_name" jdbcType="VARCHAR" property="text" />
@@ -15,13 +16,13 @@
     </association>
   </resultMap>
   <sql id="Base_Column_List">
-    id, org_id, sex, birthday, e_name, age
+    id, org_id, sex, birthday, e_name, age,salary
   </sql>
   <select id="getOne" resultType="com.liuwohe.entity.Employee">
     select emp.e_name,emp.sex,emp.birthday,emp.age,org.org_name ,org.parent_id from employee emp  join organization org on emp.org_id=org.id and org.id=1
   </select>
   <select id="getAll" resultMap="BaseResultMap">
-    select emp.id, emp.e_name,emp.sex,emp.birthday,emp.age,org.org_name ,org.parent_id
+    select emp.id, emp.org_id, emp.e_name,emp.sex,emp.birthday,emp.age,emp.salary,org.org_name ,org.parent_id
     from employee emp left join organization org
     on emp.org_id=org.id
   </select>
@@ -52,9 +53,9 @@
   </delete>
   <insert id="insert" parameterType="com.liuwohe.entity.Employee">
     insert into employee (id, org_id, sex, 
-      birthday, e_name, age)
+      birthday, e_name, age,salary)
     values (#{id,jdbcType=INTEGER}, #{orgId,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR},
-      #{birthday,jdbcType=DATE}, #{eName,jdbcType=VARCHAR}, #{age,jdbcType=INTEGER})
+      #{birthday,jdbcType=DATE}, #{name,jdbcType=VARCHAR}, #{age,jdbcType=INTEGER}, #{salary,jdbcType=DOUBLE})
   </insert>
   <insert id="insertSelective" parameterType="com.liuwohe.entity.Employee">
     insert into employee
@@ -71,11 +72,14 @@
       <if test="birthday != null">
         birthday,
       </if>
-      <if test="eName != null">
+      <if test="name != null">
         e_name,
       </if>
       <if test="age != null">
         age,
+      </if>
+      <if test="salary != null">
+        salary,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -91,11 +95,14 @@
       <if test="birthday != null">
         #{birthday,jdbcType=DATE},
       </if>
-      <if test="eName != null">
-        #{eName,jdbcType=VARCHAR},
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
       </if>
       <if test="age != null">
         #{age,jdbcType=INTEGER},
+      </if>
+      <if test="salary != null">
+        #{salary,jdbcType=DOUBLE},
       </if>
     </trim>
   </insert>
@@ -111,11 +118,14 @@
       <if test="birthday != null">
         birthday = #{birthday,jdbcType=DATE},
       </if>
-      <if test="eName != null">
-        e_name = #{eName,jdbcType=VARCHAR},
+      <if test="name != null">
+        e_name = #{name,jdbcType=VARCHAR},
       </if>
       <if test="age != null">
         age = #{age,jdbcType=INTEGER},
+      </if>
+      <if test="salary != null">
+        salary = #{salary,jdbcType=DOUBLE},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
@@ -125,8 +135,9 @@
     set org_id = #{orgId,jdbcType=VARCHAR},
       sex = #{sex,jdbcType=VARCHAR},
       birthday = #{birthday,jdbcType=DATE},
-      e_name = #{eName,jdbcType=VARCHAR},
-      age = #{age,jdbcType=INTEGER}
+      e_name = #{name,jdbcType=VARCHAR},
+      age = #{age,jdbcType=INTEGER},
+      salary = #{salary,jdbcType=DOUBLE}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

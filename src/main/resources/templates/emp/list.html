@@ -51,7 +51,11 @@
 	<div th:replace="commons/bar::topbar"></div>
 	<div th:replace="~{commons/bar::#sidebar(activeUri='list')}" ></div>
 	<main role="main" class="col-md-12 ml-sm-auto col-lg-10 pt-3 px-4">
-		<h2>*员工信息列表*</h2>
+		<h2 style="display: inline-block">*员工信息列表*</h2>
+		<button id="download" href="/download" class="btn btn-sm btn-success" style=" margin-left: 20px;height: 30px">导出</button>
+		<form style="display: inline" enctype="multipart/form-data">
+			<input type="file" id="upload" name="upload_file" class="btn btn-sm btn-success uploadBtn" style=" margin-left: 5px;height: 30px" />
+		</form>
 		<div id="choose" style="display: inline-flex">
 <!--			查找条件筛选-->
 			<form id="selectFrm" th:action="@{/select}">
@@ -88,7 +92,7 @@
 				<input id="selectByChoose" type="button" class="btn btn-sm btn-success" value="查询">
 				<input id="cleanOn" type="button" class="btn btn-sm btn-success cleanOn" value="清空">
 				</div>
-						<a class="btn btn-sm btn-success" style=" margin-left: 20px;height: 30px" th:href="@{/add}">员工添加</a>
+						<a class="btn btn-sm btn-success" style=" margin-left: 10px;height: 30px" th:href="@{/add}">员工添加</a>
 					</div>
 				</div>
 			</form>
@@ -109,7 +113,7 @@
 				</thead>
 				<tr id="emplist"  th:each="list:${empList}">
 					<td>#</td>
-					<td id="name" th:text="${list.EName}"></td>
+					<td id="name" th:text="${list.name}"></td>
 					<td id="sex1" th:if="${list.sex}==1">男</td>
 					<td id="sex2" th:if="${list.sex}==2">女</td>
 					<td id="birthday1" th:text="${#dates.format(list.birthday,'yyyy-MM-dd')}"></td>
@@ -242,7 +246,7 @@
 						var tr;
 						item.birthday=formatDate(new Date(item.birthday))
 						item.sex=parseInt(item.sex)==1?'男':'女'
-						tr='<tr><td>'+'#'+'</td><td>'+item.ename+'</td><td>'+item.sex+'</td><td>'
+						tr='<tr><td>'+'#'+'</td><td>'+item.name+'</td><td>'+item.sex+'</td><td>'
 								+item.birthday+'</td><td>'+item.age+'</td><td>'+item.organization.text+
 								'</td><td>'+'<a id="update" class="btn btn-sm btn-primary" href="/update/'+item.id+'">'+'编辑'+'</a>' +' '+
 								'<button  attr="del_Uri=/delete/'+item.id+'" class="btn btn-sm btn-danger deleteBtn" id="deleteBtn">'+'删除'+'</button>'
@@ -261,6 +265,43 @@
 			d = d < 10 ? ('0' + d) : d;
 			return y + '-' + m + '-' + d;
 		};
+	</script>
+	<script type="text/javascript">
+		//导出表格
+		$("#download").click(function (){
+			$.ajax({
+				url: '/download',
+				type: 'get',
+				success:function (res){
+					window.location.href='/download';
+				}
+			})
+		})
+	</script>
+	<script type="application/javascript">
+		//导入数据
+		$(".uploadBtn").click(function (){
+			var files = $('#upload').prop('files');
+			var data = new FormData();
+			data.append('upload_file', files[0]);
+			$.ajax({
+				url: '/upload',
+				type: 'post',
+				data: data,
+				/**
+				 *必须false才会自动加上正确的Content-Type
+				 */
+				contentType: false,
+				/**
+				 * 必须false才会避开jQuery对 formdata 的默认处理
+				 * XMLHttpRequest会对 formdata 进行正确的处理
+				 */
+				processData: false,
+				success:function (res){
+					alert(res);
+				}
+			})
+		})
 	</script>
 	</body>
 </html>

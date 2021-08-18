@@ -52,7 +52,7 @@
         <input name="id" th:value="${emp.id}" type="hidden" />
         <div style="margin-bottom: 20px;margin-top: 20px"  class="form-group">
             <label>姓名</label>
-            <input name="eName" style="width: 500px" type="text" class="form-control" th:value="${emp.EName}" placeholder="请输入姓名">
+            <input name="name" style="width: 500px" type="text" class="form-control" th:value="${emp.name}" placeholder="请输入姓名">
         </div>
         <div style="margin-bottom: 20px" class="form-group">
             <label>性别</label>
@@ -172,7 +172,7 @@
                 validating: 'glyphicon glyphicon-refresh'
             },
             fields: {
-                eName: {
+                name: {
                     message: '用户名验证失败',
                     validators: {
                         notEmpty: {
