@@ -17,4 +17,6 @@ public interface EmpService {
     void upDateMsg(Employee employee);
 
     List<Employee> selectByChoose(Select select);
+
+    void upLoad(List<Employee> empList);
 }

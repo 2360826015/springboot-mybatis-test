@@ -27,11 +27,11 @@
     on emp.org_id=org.id
   </select>
   <select id="getChooseed" parameterType="com.liuwohe.entity.Select" resultMap="BaseResultMap">
-    select emp.id, emp.e_name,emp.sex,emp.birthday,emp.age,emp.org_id,org.org_name ,org.parent_id
+    select emp.id, emp.e_name,emp.sex,emp.birthday,emp.age,emp.salary,emp.org_id,org.org_name ,org.parent_id
     from employee emp join organization org
     <where> emp.org_id=org.id
     <if test="orgName !=null and orgName !=''">
-     and emp.org_id=#{orgName}
+     and (emp.org_id=#{orgName} or org.parent_id=#{orgName})
     </if>
     <if test="sex !=null and sex !=''">
      and emp.sex=#{sex}

@@ -52,13 +52,15 @@
 	<div th:replace="~{commons/bar::#sidebar(activeUri='list')}" ></div>
 	<main role="main" class="col-md-12 ml-sm-auto col-lg-10 pt-3 px-4">
 		<h2 style="display: inline-block">*员工信息列表*</h2>
-		<button id="download" href="/download" class="btn btn-sm btn-success" style=" margin-left: 20px;height: 30px">导出</button>
+
 		<form style="display: inline" enctype="multipart/form-data">
-			<input type="file" id="upload" name="upload_file" class="btn btn-sm btn-success uploadBtn" style=" margin-left: 5px;height: 30px" />
+			<input type="file" id="file" name="file" class="btn btn-sm btn-success" style="display: inline;width: 160px; margin-left: 5px;height: 30px">
+			<button class="btn btn-sm btn-success uploadBtn" style=" margin-left: 5px;height: 30px">导入</button>
 		</form>
 		<div id="choose" style="display: inline-flex">
 <!--			查找条件筛选-->
-			<form id="selectFrm" th:action="@{/select}">
+			<form id="selectFrm" action="/select">
+				<button id="download" class="btn btn-sm btn-success" style=" margin-left: 20px;height: 30px">导出</button>
 				<input name="orgName" id="treeValue" hidden>
 				<div style="display: inline-block;font-size: 12pt" class="container">
 					<div class="row">
@@ -233,6 +235,7 @@
 			window.location.href ="/index";
 		})
 	</script>
+<!--	//触发按钮事件，执行查询返回数据生成结果列表-->
 	<script th:inline="javascript">
 		$("#selectByChoose").click(function (){
 			$.ajax({
@@ -253,7 +256,6 @@
 								+'</td></tr>';
 						$("#mytable").append(tr);
 					})
-
 				}
 			})
 		})
@@ -266,24 +268,30 @@
 			return y + '-' + m + '-' + d;
 		};
 	</script>
+
+
 	<script type="text/javascript">
 		//导出表格
 		$("#download").click(function (){
-			$.ajax({
-				url: '/download',
-				type: 'get',
-				success:function (res){
-					window.location.href='/download';
-				}
-			})
+			$("#selectFrm").attr("action",'/download');
 		})
+		// $("#download").click(function (){
+		// 	$.ajax({
+		// 		url: '/download',
+		// 		type: 'get',
+		// 		data: $("#selectFrm").serialize(),
+		// 		success:function (res) {
+		// 			console.log(res);
+		// 		}
+		// 	})
+		// })
 	</script>
 	<script type="application/javascript">
 		//导入数据
 		$(".uploadBtn").click(function (){
-			var files = $('#upload').prop('files');
+			var files = $('#file').prop('files');
 			var data = new FormData();
-			data.append('upload_file', files[0]);
+			data.append('file', files[0]);
 			$.ajax({
 				url: '/upload',
 				type: 'post',
@@ -298,10 +306,13 @@
 				 */
 				processData: false,
 				success:function (res){
-					alert(res);
+					alert("导入成功");
+					window.location.href='/upload';
+
 				}
 			})
 		})
+
 	</script>
 	</body>
 </html>

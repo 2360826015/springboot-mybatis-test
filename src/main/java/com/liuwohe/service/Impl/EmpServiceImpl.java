@@ -41,8 +41,18 @@ public class EmpServiceImpl implements EmpService {
     }
 
     @Override
-    public List<Employee> selectByChoose(Select select) {
-        return employeeMapper.getChooseed(select);
+    public List<Employee> selectByChoose(Select select){
+        List<Employee> employeeList = employeeMapper.getChooseed(select);
+        return employeeList;
+    }
+
+    //上传excel表格
+    @Override
+    public void upLoad(List<Employee> empList) {
+    //循环插入数据库
+        for(int i=0;i<empList.toArray().length;i++){
+            employeeMapper.insert(empList.get(i));
+        }
     }
 
 }
